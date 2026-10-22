@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ochrana osobných údajov – Awitalis</title>
+<meta name="description" content="Informácie o spracúvaní osobných údajov v masážnom štúdiu Awitalis podľa GDPR.">
+<link rel="icon" type="image/png" href="img/logo-znak-64.png">
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+  /* Layout: čitateľný právny text v úzkom stĺpci, obsah vľavo na počítači, tabuľka účelov ako prehľad */
+  :root{
+    --bg:#EEF0EA;--surface:#E2E6DC;--card:#F6F7F3;--fg:#172A21;--muted:#55635B;
+    --forest:#183327;--on-forest:#EEF0EA;--gold:#A8834C;--line:rgba(23,42,33,.14);--fill:#F2E3B8;
+    --display:"Marcellus","Cormorant Garamond",Georgia,serif;
+    --body:"Figtree","Segoe UI",system-ui,sans-serif;
+    --r:18px;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#0F1915;--surface:#17251F;--card:#14211B;--fg:#E4E8DF;--muted:#9AA79F;--forest:#1C3A2D;--on-forest:#EEF0EA;--gold:#C9A46B;--line:rgba(228,232,223,.14);--fill:#5A4A22;color-scheme:dark}}
+  :root[data-theme="dark"]{
+    --bg:#0F1915;--surface:#17251F;--card:#14211B;--fg:#E4E8DF;--muted:#9AA79F;--forest:#1C3A2D;--on-forest:#EEF0EA;--gold:#C9A46B;--line:rgba(228,232,223,.14);--fill:#5A4A22;color-scheme:dark}
+  :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html{scroll-behavior:smooth}
+  [id]{scroll-margin-top:84px}
+  body{margin:0;background:var(--bg);color:var(--fg);font:400 16.5px/1.7 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit}
+  a:hover{color:var(--gold)}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:.01em}
+  p,ul{margin:0}
+  .wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  @media (min-width:700px){.wrap{padding-left:max(40px,env(safe-area-inset-left,0px));padding-right:max(40px,env(safe-area-inset-right,0px))}}
+  .label{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+
+  header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .brand img{width:46px;height:auto;flex:none}
+  .brand b{display:block;font-family:var(--display);font-weight:400;font-size:23px;letter-spacing:.02em;line-height:1}
+  .brand small{display:block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-top:3px}
+  .back{font-size:14px;color:var(--muted);text-decoration:none}
+
+  .intro{padding-block:clamp(32px,6vw,72px) clamp(20px,3vw,32px)}
+  h1{font-size:clamp(34px,5vw,58px);line-height:1.08;margin-top:12px}
+  .intro p{color:var(--muted);margin-top:14px;max-width:62ch}
+
+  .layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:clamp(24px,5vw,64px);align-items:start;padding-bottom:clamp(56px,8vw,96px)}
+  .toc{position:sticky;top:92px;font-size:14px;display:grid;gap:2px;border-left:1px solid var(--line)}
+  .toc a{text-decoration:none;color:var(--muted);padding:5px 0 5px 14px;border-left:2px solid transparent;margin-left:-1px}
+  .toc a:hover{color:var(--fg);border-left-color:var(--gold)}
+  article{max-width:70ch;display:grid;gap:44px}
+  section{display:grid;gap:12px}
+  h2{font-size:clamp(24px,2.6vw,30px);line-height:1.2}
+  h2 .n{color:var(--gold);margin-right:10px}
+  h3{font-size:19px;margin-top:6px}
+  ul{padding-left:20px;display:grid;gap:6px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;display:grid;gap:4px}
+  .card b{font-weight:600}
+  .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+  table{border-collapse:collapse;width:100%;min-width:620px;font-size:15px;line-height:1.5}
+  th,td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line)}
+  tr:last-child td{border-bottom:0}
+  th{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  td:first-child{font-weight:600}
+  .muted{color:var(--muted)}
+  .fill{background:var(--fill);border-radius:4px;padding:0 4px;font-weight:600}
+  .note{font-size:14.5px;color:var(--muted);border-left:3px solid var(--gold);padding-left:14px}
+
+  footer{padding-block:28px;font-size:14px;color:var(--muted);border-top:1px solid var(--line)}
+  footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+  footer a{text-decoration:none}
+
+  @media (max-width:860px){
+    .layout{grid-template-columns:1fr}
+    .toc{position:static;border-left:0;display:flex;flex-wrap:wrap;gap:6px}
+    .toc a{border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin:0}
+  }
+  /* ===== spoločná hlavička (rovnaká na všetkých stránkach) ===== */
+  header .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+  header .links{display:flex;gap:28px;font-size:15px}
+  header .links a{position:relative;padding:4px 0;color:var(--muted);text-decoration:none;transition:color .2s}
+  header .links a:hover,header .links a.active{color:var(--fg)}
+  header .links a.active::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;border-radius:2px;background:var(--gold)}
+  header .hright{display:flex;align-items:center;gap:10px}
+  header .hcta{display:inline-flex;align-items:center;padding:11px 20px;border-radius:999px;background:var(--forest);color:var(--on-forest);font:600 15px var(--body);text-decoration:none;white-space:nowrap;transition:background .2s}
+  header .hcta:hover{background:var(--gold)}
+  header .hcta[aria-current]{background:var(--gold);color:#172A21}
+  .menu-btn{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer;place-items:center;flex:none}
+  .menu-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+  .menu-btn .x{display:none}
+  .menu-btn[aria-expanded="true"] .x{display:block}
+  .menu-btn[aria-expanded="true"] .bars{display:none}
+  .mnav{position:absolute;top:100%;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 18px 30px -18px rgba(0,0,0,.35);padding:6px max(16px,env(safe-area-inset-right,0px)) 22px max(16px,env(safe-area-inset-left,0px));display:grid}
+  .mnav[hidden]{display:none}
+  .mnav a{font-family:var(--display);font-size:24px;padding:12px 0;border-bottom:1px solid var(--line);color:var(--fg);text-decoration:none}
+  .mnav a.active{color:var(--gold)}
+  .mnav .mcta{margin-top:18px;border:0;text-align:center;font-family:var(--body);font-size:16px;font-weight:600;background:var(--gold);color:#172A21;border-radius:999px;padding:14px}
+  .mnav .mtel{border:0;font-family:var(--body);font-size:15px;text-align:center;color:var(--muted);padding:12px 0 0}
+  @media (max-width:900px){header .links{display:none}.menu-btn{display:grid}}
+  @media (max-width:640px){header .hcta{display:none}}
+  @media (min-width:901px){.mnav{display:none!important}}
+</style>
+</head>
+<body>
+<script>
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (!location.hash) {
+    const toTop = () => { scrollTo({ top: 0, behavior: 'instant' }); try { document.body.scrollIntoView({ block: 'start', behavior: 'instant' }); } catch (e) {} };
+    toTop(); addEventListener('load', toTop); addEventListener('pageshow', toTop);
+  }
+</script>
+
+<header>
+  <div class="wrap nav">
+    <a href="./" class="brand" aria-label="Awitalis – domov">
+      <img src="img/logo-znak.png" alt="" width="46" height="43">
+      <span><b>Awitalis</b><small>Bonsai princíp</small></span>
+    </a>
+    <nav class="links" aria-label="Hlavné menu">
+      <a href="sluzby.html" data-page="sluzby">Služby</a>
+      <a href="sluzby.html#cennik" data-spy="cennik">Cenník</a>
+      <a href="./#o-nas" data-spy="o-nas">O nás</a>
+      <a href="./#kontakt" data-spy="kontakt">Kontakt</a>
+    </nav>
+    <div class="hright">
+      <a class="hcta" href="rezervacia.html">Objednať sa</a>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mnav"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="bars" d="M4 7h16M4 12h16M4 17h16"/><path class="x" d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Menu" hidden>
+    <a href="sluzby.html" data-page="sluzby">Služby</a>
+    <a href="sluzby.html#cennik" data-spy="cennik">Cenník</a>
+    <a href="./#o-nas" data-spy="o-nas">O nás</a>
+    <a href="./#kontakt" data-spy="kontakt">Kontakt</a>
+    <a class="mcta" href="rezervacia.html">Rezervovať online</a>
+    <a class="mtel" href="tel:+421952419390">alebo zavolajte 0952 419 390</a>
+  </nav>
+</header>
+
+<main>
+  <div class="intro">
+    <div class="wrap">
+      <p class="label">GDPR</p>
+      <h1>Ochrana osobných údajov</h1>
+      <p>Tu nájdete, aké údaje o vás spracúvame, prečo, ako dlho ich uchovávame a aké máte práva. Informácie poskytujeme podľa článkov 13 a 14 nariadenia (EÚ) 2016/679 (GDPR) a zákona č. 18/2018 Z. z. o ochrane osobných údajov.</p>
+    </div>
+  </div>
+
+  <div class="wrap layout">
+    <nav class="toc" aria-label="Obsah">
+      <a href="#prevadzkovatel">Prevádzkovateľ</a>
+      <a href="#ucely">Aké údaje a prečo</a>
+      <a href="#zdravie">Údaje o zdraví</a>
+      <a href="#prijemcovia">Komu údaje poskytujeme</a>
+      <a href="#cookies">Cookies a web</a>
+      <a href="#prava">Vaše práva</a>
+      <a href="#staznost">Sťažnosť</a>
+    </nav>
+
+    <article>
+      <section id="prevadzkovatel">
+        <h2><span class="n">1</span>Kto spracúva vaše údaje</h2>
+        <p>Prevádzkovateľom je:</p>
+        <div class="card">
+          <b><span class="fill">[meno a priezvisko alebo obchodné meno podnikateľa]</span></b>
+          <span>IČO: <span class="fill">[IČO]</span></span>
+          <span>Miesto podnikania: <span class="fill">[adresa podľa živnostenského registra]</span></span>
+          <span>Prevádzka: Awitalis masážne štúdio, Hurbanovská cesta 30, 946 57 Svätý Peter</span>
+          <span>E-mail: <a href="mailto:awitalismasaz@gmail.com">awitalismasaz@gmail.com</a> · Telefón: 0952 419 390</span>
+        </div>
+        <p>Zodpovednú osobu (DPO) sme neurčili, pretože nám to zákon neukladá. So všetkými otázkami sa obráťte priamo na nás.</p>
+      </section>
+
+      <section id="ucely">
+        <h2><span class="n">2</span>Aké údaje spracúvame a prečo</h2>
+        <div class="tbl">
+          <table>
+            <tr><th>Účel</th><th>Údaje</th><th>Právny základ</th><th>Ako dlho</th></tr>
+            <tr>
+              <td>Rezervácia termínu (online aj telefonicky) a jej potvrdenie, pripomenutie alebo zmena</td>
+              <td>meno a priezvisko, telefón, e-mail (nepovinný), poznámka, zvolená terapia, dátum a čas</td>
+              <td>vykonanie opatrení pred uzavretím zmluvy na vašu žiadosť a plnenie zmluvy – čl. 6 ods. 1 písm. b) GDPR</td>
+              <td>12 mesiacov od termínu, potom sa rezervácia automaticky vymaže</td>
+            </tr>
+            <tr>
+              <td>Ochrana rezervačného systému pred zneužitím a spamom</td>
+              <td>IP adresa, čas odoslania rezervácie</td>
+              <td>oprávnený záujem na bezpečnosti webu – čl. 6 ods. 1 písm. f) GDPR</td>
+              <td>spolu s rezerváciou, najviac 12 mesiacov</td>
+            </tr>
+            <tr>
+              <td>Odpovede na vaše otázky (e-mail, telefón, správy na sociálnych sieťach)</td>
+              <td>kontaktné údaje a obsah správy</td>
+              <td>vybavenie vašej požiadavky – čl. 6 ods. 1 písm. b) alebo f) GDPR</td>
+              <td>počas vybavovania, potom najviac 12 mesiacov</td>
+            </tr>
+            <tr>
+              <td>Účtovníctvo, ak vám vystavíme faktúru</td>
+              <td>údaje na faktúre</td>
+              <td>zákonná povinnosť – čl. 6 ods. 1 písm. c) GDPR, zákon č. 431/2002 Z. z. o účtovníctve</td>
+              <td>10 rokov od konca roka, ktorého sa doklad týka</td>
+            </tr>
+          </table>
+        </div>
+        <p><b>Je poskytnutie údajov povinné?</b> Meno a telefón potrebujeme, aby sme vám mohli termín rezervovať a v prípade zmeny vás kontaktovať. Bez nich rezerváciu neprijmeme. E-mail a poznámka sú dobrovoľné. E-mail využijeme len na potvrdenie a správy k vašej rezervácii.</p>
+        <p>Údaje nepoužívame na marketing, nepredávame ich a nerozhodujeme o vás automatizovane ani nevytvárame profily.</p>
+        <p>Ak rezerváciu urobí niekto za vás (napríklad člen rodiny), údaje o vás sme získali od neho. Spracúvame ich na rovnaké účely a rovnako dlho, ako je uvedené vyššie.</p>
+      </section>
+
+      <section id="zdravie">
+        <h2><span class="n">3</span>Údaje o zdravotnom stave</h2>
+        <p>Údaje o zdraví patria medzi osobitne chránené údaje. Do rezervačného formulára ich preto prosím <b>nepíšte</b>. Ak sú pre bezpečný priebeh terapie dôležité, preberieme ich osobne pred terapiou.</p>
+        <p>Informácie o zdravotnom stave, ktoré nám poviete osobne, použijeme len na to, aby sme terapiu prispôsobili a vykonali bezpečne. Neukladáme ich do rezervačného systému.</p>
+      </section>
+
+      <section id="prijemcovia">
+        <h2><span class="n">4</span>Komu údaje poskytujeme</h2>
+        <p>Vaše údaje sú dostupné len nám. Pomáhajú nám s nimi títo sprostredkovatelia, ktorí ich spracúvajú len podľa našich pokynov:</p>
+        <ul>
+          <li><b>Websupport s.r.o.</b>, Karadžičova 7608/12, 821 08 Bratislava, IČO 36 421 928 – prevádzka webu, databázy rezervácií a e-mailu.</li>
+          <li><b>Google Ireland Limited</b>, Gordon House, Barrow Street, Dublin 4, Írsko – e-mailová schránka Gmail, do ktorej nám prichádzajú upozornenia na rezervácie a vaše e-maily.</li>
+        </ul>
+        <p>Google môže údaje spracúvať aj v USA. Prenos je chránený, pretože materská spoločnosť Google LLC je certifikovaná podľa rámca EÚ – USA na ochranu osobných údajov (Data Privacy Framework), ku ktorému Európska komisia prijala rozhodnutie o primeranosti podľa čl. 45 GDPR.</p>
+        <p>Inak údaje poskytneme len orgánom verejnej moci, ak nám to ukladá zákon.</p>
+      </section>
+
+      <section id="cookies">
+        <h2><span class="n">5</span>Cookies a návšteva webu</h2>
+        <ul>
+          <li>Web <b>nepoužíva</b> analytické, reklamné ani sledovacie cookies, preto sa vás na súhlas nepýtame.</li>
+          <li>Písma sú uložené priamo na našom webe, váš prehliadač sa kvôli nim nepripája na servery tretích strán.</li>
+          <li>Administrácia rezervácií používa jednu nevyhnutnú cookie na prihlásenie. Týka sa len prevádzkovateľa, nie návštevníkov.</li>
+          <li>Server webhostingu si pri každej návšteve technicky zaznamenáva IP adresu a čas prístupu (tzv. logy). Slúžia len na zabezpečenie webu a riešenie chýb a uchovávajú sa len po dobu nevyhnutnú na tento účel.</li>
+          <li>Odkazy na Facebook, Instagram a Google Mapy vedú na stránky iných prevádzkovateľov. Po kliknutí platia ich pravidlá ochrany súkromia.</li>
+        </ul>
+      </section>
+
+      <section id="prava">
+        <h2><span class="n">6</span>Vaše práva</h2>
+        <p>Máte právo:</p>
+        <ul>
+          <li>požadovať <b>prístup</b> k údajom, ktoré o vás spracúvame, a ich kópiu (čl. 15 GDPR),</li>
+          <li>na <b>opravu</b> nesprávnych alebo neúplných údajov (čl. 16),</li>
+          <li>na <b>vymazanie</b> údajov, ak už nie sú potrebné alebo sa spracúvajú nezákonne (čl. 17),</li>
+          <li>na <b>obmedzenie</b> spracúvania (čl. 18),</li>
+          <li>na <b>prenosnosť</b> údajov, ktoré ste nám poskytli (čl. 20),</li>
+          <li><b>namietať</b> proti spracúvaniu na základe oprávneného záujmu (čl. 21).</li>
+        </ul>
+        <p>Stačí nám napísať na <a href="mailto:awitalismasaz@gmail.com">awitalismasaz@gmail.com</a> alebo zavolať na 0952 419 390. Odpovieme bez zbytočného odkladu, najneskôr do jedného mesiaca. Vybavenie je bezplatné. Rezerváciu môžete kedykoľvek zrušiť aj cez odkaz v potvrdzovacom e-maile.</p>
+      </section>
+
+      <section id="staznost">
+        <h2><span class="n">7</span>Sťažnosť</h2>
+        <p>Ak si myslíte, že vaše údaje spracúvame v rozpore s predpismi, môžete podať návrh na začatie konania na dozornom orgáne:</p>
+        <div class="card">
+          <b>Úrad na ochranu osobných údajov Slovenskej republiky</b>
+          <span>Galvaniho Business Centrum II, Galvaniho 7/B, 821 04 Bratislava</span>
+          <span>E-mail: statny.dozor@pdp.gov.sk · Telefón: +421 2 3231 3214</span>
+          <span><a href="https://dataprotection.gov.sk" target="_blank" rel="noopener">dataprotection.gov.sk</a></span>
+        </div>
+        <p class="muted">Tieto informácie platia od <span class="fill">[dátum spustenia webu]</span>. Ak ich zmeníme, aktuálnu verziu zverejníme na tejto stránke.</p>
+      </section>
+    </article>
+  </div>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Awitalis masážne štúdio · Svätý Peter</span><a href="./">Späť na úvod</a></div></footer>
+<script>
+  // spoločná hlavička: mobilné menu a zvýraznenie aktuálnej časti
+  (() => {
+    const btn = document.getElementById('menuBtn'), nav = document.getElementById('mnav');
+    const set = open => { nav.hidden = !open; btn.setAttribute('aria-expanded', String(open)); };
+    btn.addEventListener('click', () => set(nav.hidden));
+    nav.addEventListener('click', e => { if (e.target.closest('a')) set(false); });
+    addEventListener('keydown', e => { if (e.key === 'Escape') set(false); });
+    addEventListener('resize', () => { if (innerWidth > 900) set(false); });
+
+    const file = location.pathname.split('/').pop() || 'index.html';
+    const all = [...document.querySelectorAll('header a[data-spy], header a[data-page]')];
+    const spies = all.filter(a => a.dataset.spy && document.getElementById(a.dataset.spy));
+    const update = () => {
+      let cur = null;
+      for (const a of spies) {
+        const r = document.getElementById(a.dataset.spy).getBoundingClientRect();
+        if (r.top <= 140 && r.bottom > 140) cur = a.dataset.spy;
+      }
+      // úplne dole na stránke: posledná viditeľná sekcia (napr. Kontakt)
+      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) {
+        const vis = spies.filter(a => document.getElementById(a.dataset.spy).getBoundingClientRect().top < innerHeight);
+        if (vis.length) cur = vis[vis.length - 1].dataset.spy;
+      }
+      all.forEach(a => {
+        const on = cur ? a.dataset.spy === cur : (a.dataset.page && file.startsWith(a.dataset.page));
+        a.classList.toggle('active', !!on);
+      });
+    };
+    addEventListener('scroll', update, { passive: true }); addEventListener('hashchange', update); update();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rezervácia – Awitalis</title>
+<meta name="description" content="Online rezervácia termínu v masážnom štúdiu Awitalis, Svätý Peter.">
+<link rel="icon" type="image/png" href="img/logo-znak-64.png">
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+  /* Layout: štyri kroky pod sebou vľavo, vpravo lepiaci súhrn rezervácie ako „lístok“ – na mobile súhrn pod krokmi */
+  :root{
+    --bg:#EEF0EA;--surface:#E2E6DC;--card:#F6F7F3;--fg:#172A21;--muted:#55635B;
+    --forest:#183327;--on-forest:#EEF0EA;--gold:#A8834C;--line:rgba(23,42,33,.14);
+    --danger:#A2412F;
+    --display:"Marcellus","Cormorant Garamond",Georgia,serif;
+    --body:"Figtree","Segoe UI",system-ui,sans-serif;
+    --r:18px;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#0F1915;--surface:#17251F;--card:#14211B;--fg:#E4E8DF;--muted:#9AA79F;--forest:#1C3A2D;--on-forest:#EEF0EA;--gold:#C9A46B;--line:rgba(228,232,223,.14);--danger:#E08A76;color-scheme:dark}}
+  :root[data-theme="dark"]{
+    --bg:#0F1915;--surface:#17251F;--card:#14211B;--fg:#E4E8DF;--muted:#9AA79F;--forest:#1C3A2D;--on-forest:#EEF0EA;--gold:#C9A46B;--line:rgba(228,232,223,.14);--danger:#E08A76;color-scheme:dark}
+  :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.6 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:.01em}
+  p{margin:0}
+  button{font:inherit;color:inherit}
+  .wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  @media (min-width:700px){.wrap{padding-left:max(40px,env(safe-area-inset-left,0px));padding-right:max(40px,env(safe-area-inset-right,0px))}}
+  .label{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+
+  header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand img{width:46px;height:auto;flex:none}
+  .brand b{display:block;font-family:var(--display);font-weight:400;font-size:23px;letter-spacing:.02em;line-height:1}
+  .brand small{display:block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-top:3px}
+  .nav-tel{font-size:15px;font-weight:600}
+
+  .intro{padding-block:clamp(32px,6vw,72px) clamp(24px,4vw,40px)}
+  .back{display:inline-flex;font-size:14px;color:var(--muted);margin-bottom:22px}
+  .back:hover{color:var(--fg)}
+  h1{font-size:clamp(36px,5vw,62px);line-height:1.05;margin-top:12px}
+  h1 span{color:var(--gold)}
+  .intro p.lead{color:var(--muted);margin-top:14px;max-width:52ch}
+  .demo{display:inline-flex;gap:8px;align-items:center;margin-top:18px;font-size:13px;color:var(--muted);border:1px dashed var(--line);border-radius:999px;padding:6px 14px}
+  .demo i{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start;padding-bottom:clamp(56px,8vw,96px)}
+  .steps{display:grid;gap:16px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(20px,3vw,32px);transition:opacity .3s}
+  .step.locked{opacity:.45;pointer-events:none}
+  .step-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+  .step-head .n{font-family:var(--display);font-size:15px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--forest);color:var(--on-forest);flex:none;transform:translateY(4px)}
+  .step.done .step-head .n{background:var(--gold);color:#172A21}
+  .step-head h2{font-size:clamp(22px,2.4vw,27px)}
+  .hint{font-size:14px;color:var(--muted);margin-top:-8px;margin-bottom:16px}
+
+  /* služby */
+  .svc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .svc .grp{grid-column:1/-1;margin:10px 0 0;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .svc .grp:first-child{margin-top:0}
+  .opt{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:2px;background:var(--bg);transition:border-color .2s,background .2s,color .2s}
+  .opt:hover{border-color:var(--gold)}
+  .opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .opt b{font-weight:600;font-size:15.5px;line-height:1.3}
+  .opt span{font-size:13px;color:var(--muted)}
+  .opt[aria-pressed="true"]{background:var(--forest);border-color:var(--forest);color:var(--on-forest)}
+  .opt[aria-pressed="true"] span{color:color-mix(in srgb,var(--on-forest) 70%,transparent)}
+
+  .durs{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;padding-top:18px;border-top:1px dashed var(--line)}
+  .durs[hidden]{display:none}
+  .durs p{width:100%;font-size:14px;color:var(--muted)}
+  .chip{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:9px 18px;font-weight:600;font-size:15px;background:var(--bg);font-variant-numeric:tabular-nums}
+  .chip:hover{border-color:var(--gold)}
+  .chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .chip[aria-pressed="true"]{background:var(--forest);border-color:var(--forest);color:var(--on-forest)}
+
+  /* dni */
+  .days-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:15px}
+  .days-nav strong{font-family:var(--display);font-weight:400;font-size:19px}
+  .arrow{all:unset;cursor:pointer;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:16px}
+  .arrow:hover{border-color:var(--gold)}
+  .arrow:disabled{opacity:.3;cursor:default}
+  .days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+  .day{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--line);border-radius:14px;padding:10px 4px;text-align:center;background:var(--bg);font-variant-numeric:tabular-nums}
+  .day small{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .day b{display:block;font-family:var(--display);font-weight:400;font-size:22px;line-height:1.2}
+  .day em{display:block;font-style:normal;font-size:11.5px;color:var(--muted)}
+  .day:hover:not(:disabled){border-color:var(--gold)}
+  .day:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .day:disabled{cursor:default;opacity:.4}
+  .day[aria-pressed="true"]{background:var(--forest);border-color:var(--forest);color:var(--on-forest)}
+  .day[aria-pressed="true"] small,.day[aria-pressed="true"] em{color:color-mix(in srgb,var(--on-forest) 70%,transparent)}
+
+  /* časy */
+  .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+  .slot{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;border:1px solid var(--line);border-radius:12px;padding:10px 4px;font-weight:600;background:var(--bg);font-variant-numeric:tabular-nums}
+  .slot:hover:not(:disabled){border-color:var(--gold)}
+  .slot:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .slot:disabled{cursor:not-allowed;color:var(--muted);text-decoration:line-through;opacity:.5}
+  .slot[aria-pressed="true"]{background:var(--forest);border-color:var(--forest);color:var(--on-forest)}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;border:1px solid var(--line);background:var(--bg);vertical-align:-1px}
+  .legend .x::before{opacity:.45;background:var(--line)}
+  .empty{font-size:15px;color:var(--muted);padding:12px 0}
+
+  /* formulár */
+  form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .f{display:grid;gap:6px}
+  .f.full{grid-column:1/-1}
+  label{font-size:14px;font-weight:600}
+  input,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;width:100%}
+  textarea{min-height:84px;resize:vertical}
+  input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 25%,transparent)}
+  .err{font-size:13px;color:var(--danger);min-height:0}
+  .check{display:flex;gap:10px;align-items:flex-start;font-size:14px;font-weight:400;color:var(--muted)}
+  .check input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--forest)}
+
+  /* súhrn */
+  .ticket{position:sticky;top:92px;background:var(--forest);color:var(--on-forest);border-radius:var(--r);padding:26px;display:grid;gap:16px}
+  .ticket h3{font-size:24px}
+  .ticket dl{margin:0;display:grid;gap:12px}
+  .ticket dt{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+  .ticket dd{margin:2px 0 0;font-family:var(--display);font-size:19px;line-height:1.3}
+  .ticket dd.none{font-family:var(--body);font-size:14px;opacity:.55}
+  .ticket hr{border:0;border-top:1px dashed rgba(238,240,234,.25);margin:0}
+  .submit{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;background:var(--gold);color:#172A21;border-radius:999px;padding:14px 20px;font-weight:600;transition:background .2s,opacity .2s}
+  .submit:hover{background:var(--on-forest)}
+  .submit:focus-visible{outline:2px solid var(--on-forest);outline-offset:3px}
+  .submit[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+  .ticket .small{font-size:13px;opacity:.7}
+
+  /* potvrdenie */
+  .done-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(28px,5vw,56px);text-align:center;display:grid;gap:16px;justify-items:center}
+  .done-card .tick{width:64px;height:64px;border-radius:50%;background:var(--forest);display:grid;place-items:center}
+  .done-card .tick svg{width:30px;height:30px;stroke:var(--gold);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .done-card h2{font-size:clamp(28px,4vw,40px)}
+  .done-card p{color:var(--muted);max-width:46ch}
+  .done-card .when{font-family:var(--display);font-size:22px;color:var(--fg)}
+  .btn{all:unset;cursor:pointer;border:1px solid var(--fg);border-radius:999px;padding:12px 22px;font-weight:600}
+  .btn:hover{background:var(--fg);color:var(--bg)}
+
+  footer{padding-block:28px;font-size:14px;color:var(--muted);border-top:1px solid var(--line)}
+  footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+
+  @media (max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .ticket{position:static}
+  }
+  @media (max-width:560px){
+    .svc{grid-template-columns:1fr}
+    form{grid-template-columns:1fr}
+    .days{gap:5px}
+    .day{padding:8px 2px}
+    .day b{font-size:19px}
+    .nav-tel{display:none}
+  }
+  /* ===== spoločná hlavička (rovnaká na všetkých stránkach) ===== */
+  header .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+  header .links{display:flex;gap:28px;font-size:15px}
+  header .links a{position:relative;padding:4px 0;color:var(--muted);text-decoration:none;transition:color .2s}
+  header .links a:hover,header .links a.active{color:var(--fg)}
+  header .links a.active::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;border-radius:2px;background:var(--gold)}
+  header .hright{display:flex;align-items:center;gap:10px}
+  header .hcta{display:inline-flex;align-items:center;padding:11px 20px;border-radius:999px;background:var(--forest);color:var(--on-forest);font:600 15px var(--body);text-decoration:none;white-space:nowrap;transition:background .2s}
+  header .hcta:hover{background:var(--gold)}
+  header .hcta[aria-current]{background:var(--gold);color:#172A21}
+  .menu-btn{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer;place-items:center;flex:none}
+  .menu-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+  .menu-btn .x{display:none}
+  .menu-btn[aria-expanded="true"] .x{display:block}
+  .menu-btn[aria-expanded="true"] .bars{display:none}
+  .mnav{position:absolute;top:100%;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 18px 30px -18px rgba(0,0,0,.35);padding:6px max(16px,env(safe-area-inset-right,0px)) 22px max(16px,env(safe-area-inset-left,0px));display:grid}
+  .mnav[hidden]{display:none}
+  .mnav a{font-family:var(--display);font-size:24px;padding:12px 0;border-bottom:1px solid var(--line);color:var(--fg);text-decoration:none}
+  .mnav a.active{color:var(--gold)}
+  .mnav .mcta{margin-top:18px;border:0;text-align:center;font-family:var(--body);font-size:16px;font-weight:600;background:var(--gold);color:#172A21;border-radius:999px;padding:14px}
+  .mnav .mtel{border:0;font-family:var(--body);font-size:15px;text-align:center;color:var(--muted);padding:12px 0 0}
+  @media (max-width:900px){header .links{display:none}.menu-btn{display:grid}}
+  @media (max-width:640px){header .hcta{display:none}}
+  @media (min-width:901px){.mnav{display:none!important}}
+</style>
+</head>
+<body>
+<script>
+  // Stránka sa vždy otvorí hore (prehliadač inak niekedy zachová posun z predchádzajúcej stránky).
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (!location.hash) {
+    const toTop = () => { scrollTo({ top: 0, behavior: 'instant' }); try { document.body.scrollIntoView({ block: 'start', behavior: 'instant' }); } catch (e) {} };
+    toTop(); addEventListener('load', toTop); addEventListener('pageshow', toTop);
+  }
+</script>
+
+<header>
+  <div class="wrap nav">
+    <a href="./" class="brand" aria-label="Awitalis – domov">
+      <img src="img/logo-znak.png" alt="" width="46" height="43">
+      <span><b>Awitalis</b><small>Bonsai princíp</small></span>
+    </a>
+    <nav class="links" aria-label="Hlavné menu">
+      <a href="sluzby.html" data-page="sluzby">Služby</a>
+      <a href="sluzby.html#cennik" data-spy="cennik">Cenník</a>
+      <a href="./#o-nas" data-spy="o-nas">O nás</a>
+      <a href="./#kontakt" data-spy="kontakt">Kontakt</a>
+    </nav>
+    <div class="hright">
+      <a class="hcta" href="rezervacia.html" aria-current="page">Objednať sa</a>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mnav"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="bars" d="M4 7h16M4 12h16M4 17h16"/><path class="x" d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Menu" hidden>
+    <a href="sluzby.html" data-page="sluzby">Služby</a>
+    <a href="sluzby.html#cennik" data-spy="cennik">Cenník</a>
+    <a href="./#o-nas" data-spy="o-nas">O nás</a>
+    <a href="./#kontakt" data-spy="kontakt">Kontakt</a>
+    <a class="mcta" href="rezervacia.html">Rezervovať online</a>
+    <a class="mtel" href="tel:+421952419390">alebo zavolajte 0952 419 390</a>
+  </nav>
+</header>
+
+<main>
+  <div class="intro">
+    <div class="wrap">
+      <a class="back" href="./">← Späť na úvod</a>
+      <p class="label">Online rezervácia</p>
+      <h1>Rezervujte si <span>svoj termín</span></h1>
+      <p class="lead">Vyberte terapiu, deň a čas. Termín vám potvrdíme telefonicky alebo e-mailom.</p>
+      <p class="demo" id="demoNote" hidden><i></i>Ukážka: rezervácia sa zatiaľ nikam neodosiela, obsadené časy sú vymyslené.</p>
+    </div>
+  </div>
+
+  <div class="wrap layout" id="app">
+    <div class="steps" id="steps">
+      <section class="step" id="s1" aria-labelledby="h1s">
+        <div class="step-head"><span class="n">1</span><h2 id="h1s">Terapia</h2></div>
+        <div class="svc" id="svc" role="group" aria-label="Výber terapie"></div>
+        <div class="durs" id="durs" role="group" aria-label="Dĺžka terapie" hidden></div>
+        <p class="hint" style="margin:16px 0 0">Ceny sú orientačné, typ a dĺžku terapie môžeme prispôsobiť na mieste. Bankovanie (+5 €) alebo tejping (10 €) si dohodnete pri návšteve.</p>
+      </section>
+
+      <section class="step locked" id="s2" aria-labelledby="h2s">
+        <div class="step-head"><span class="n">2</span><h2 id="h2s">Deň</h2></div>
+        <p class="hint">Objednávať sa dá Po – Pi, najviac 4 týždne dopredu.</p>
+        <div class="days-nav">
+          <button class="arrow" id="prev" type="button" aria-label="Predchádzajúci týždeň">←</button>
+          <strong id="weekLabel"></strong>
+          <button class="arrow" id="next" type="button" aria-label="Ďalší týždeň">→</button>
+        </div>
+        <div class="days" id="days" role="group" aria-label="Výber dňa"></div>
+      </section>
+
+      <section class="step locked" id="s3" aria-labelledby="h3s">
+        <div class="step-head"><span class="n">3</span><h2 id="h3s">Čas</h2></div>
+        <p class="hint" id="slotHint">Ukazujeme len časy, kedy sa celá terapia stihne do 19:00.</p>
+        <div class="slots" id="slots" role="group" aria-label="Výber času"></div>
+        <div class="legend"><span>voľné</span><span class="x">obsadené</span></div>
+      </section>
+
+      <section class="step locked" id="s4" aria-labelledby="h4s">
+        <div class="step-head"><span class="n">4</span><h2 id="h4s">Vaše údaje</h2></div>
+        <form id="form" novalidate>
+          <div style="position:absolute;left:-9999px" aria-hidden="true"><label for="website">Nevypĺňajte</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+          <div class="f"><label for="name">Meno a priezvisko</label><input id="name" name="name" autocomplete="name" required><span class="err" id="e-name"></span></div>
+          <div class="f"><label for="phone">Telefón</label><input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="09xx xxx xxx" required><span class="err" id="e-phone"></span></div>
+          <div class="f full"><label for="email">E-mail <span style="font-weight:400;color:var(--muted)">(na potvrdenie, nepovinné)</span></label><input id="email" name="email" type="email" autocomplete="email"><span class="err" id="e-email"></span></div>
+          <div class="f full"><label for="note">Poznámka <span style="font-weight:400;color:var(--muted)">(nepovinné, bez údajov o zdravotnom stave)</span></label><textarea id="note" name="note"></textarea></div>
+          <label class="check f full" for="gdpr"><input type="checkbox" id="gdpr" required><span>Oboznámil(a) som sa s <a href="ochrana-udajov.html" target="_blank" rel="noopener">informáciami o spracúvaní osobných údajov</a>.</span></label>
+          <span class="err f full" id="e-gdpr"></span>
+        </form>
+      </section>
+    </div>
+
+    <aside class="ticket" aria-live="polite">
+      <h3>Vaša rezervácia</h3>
+      <dl>
+        <div><dt>Terapia</dt><dd id="t-svc" class="none">Zatiaľ nevybraná</dd></div>
+        <div><dt>Dĺžka a cena</dt><dd id="t-dur" class="none">–</dd></div>
+        <div><dt>Termín</dt><dd id="t-when" class="none">–</dd></div>
+      </dl>
+      <hr>
+      <button class="submit" id="submit" type="button" aria-disabled="true">Odoslať rezerváciu</button>
+      <p class="small" id="formMsg" role="alert" style="color:#F3C9BE;opacity:1" hidden></p>
+      <p class="small">Hurbanovská cesta 30, Svätý Peter · Po – Pi 8:00 – 19:00</p>
+    </aside>
+  </div>
+
+  <div class="wrap" id="doneWrap" hidden style="padding-bottom:clamp(56px,8vw,96px)">
+    <div class="done-card">
+      <div class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h2 id="doneTitle">Ďakujeme, termín je rezervovaný</h2>
+      <p class="when" id="doneWhen"></p>
+      <p id="doneText"></p>
+      <button class="btn" id="again" type="button">Vyskúšať ďalšiu rezerváciu</button>
+    </div>
+  </div>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Awitalis masážne štúdio · Svätý Peter</span><span><a href="ochrana-udajov.html">Ochrana osobných údajov</a> · <a href="./">Späť na úvod</a></span></div></footer>
+
+<script>
+(async () => {
+  // ===== Režim =====
+  // Na serveri s PHP (Websupport) sa nastavenia a obsadené časy načítajú z api/availability.php.
+  // Bez servera (náhľad) beží ukážka s vymysleným obsadením.
+  let LIVE = false;
+  let CONFIG = {
+    workDays: [1, 2, 3, 4, 5], open: 8 * 60, close: 19 * 60, step: 30, buffer: 15,
+    leadMinutes: 120, horizonDays: 28, capacity: 1,
+  };
+  // Rovnaký zoznam ako v api/config.php (na serveri sa načíta odtiaľ).
+  const M = 'Manuálne terapie', P = 'Prístrojové terapie', D = 'Ďalšie terapie';
+  let SERVICES = [
+    { id: 'celotelova', group: M, name: 'Celotelová uvoľňujúca masáž', durations: [50], prices: [40] },
+    { id: 'sportova',   group: M, name: 'Športová masáž',              durations: [50], prices: [45] },
+    { id: 'chrbat',     group: M, name: 'Masáž chrbta a šije',         durations: [30], prices: [25] },
+    { id: 'lymfo-telo', group: M, name: 'Manuálna lymfodrenáž tela',   durations: [25], prices: [45] },
+    { id: 'lymfo-tvar', group: M, name: 'Manuálna lymfodrenáž tváre',  durations: [25], prices: [40] },
+    { id: 'kranio',     group: M, name: 'Kraniosakrálna terapia',      durations: [50], prices: [40] },
+    { id: 'visceral',   group: M, name: 'Viscerálna terapia',          durations: [50], prices: [40] },
+    { id: 'reflexna',   group: M, name: 'Reflexná masáž chodidiel',    durations: [40], prices: [30] },
+    { id: 'lavove',     group: M, name: 'Masáž lávovými kameňmi',      durations: [60], prices: [60] },
+    { id: 'lomi',       group: M, name: 'Lomi Lomi masáž',             durations: [70], prices: [80] },
+    { id: 'madero',     group: M, name: 'Maderoterapia',               durations: [50], prices: [45] },
+    { id: 'lymfopres',  group: P, name: 'Prístrojová lymfodrenáž (lymfopres)', durations: [30], prices: [20] },
+    { id: 'shockwave',  group: P, name: 'Terapia rázovou vlnou (shockwave)',   durations: [30], prices: [20], note: '1 lokalita' },
+    { id: 'komplexna',  group: P, name: 'Komplexná terapia (rázová vlna + manuálne ošetrenie)', durations: [60], prices: [55], note: '2 lokality' },
+    { id: 'smt',        group: D, name: 'Športová manuálna terapia', durations: [45, 60], prices: [null, null] },
+    { id: 'breuss',     group: D, name: 'Breuss masáž',              durations: [45],     prices: [null] },
+    { id: 'moxa',       group: D, name: 'Moxovanie',                 durations: [30],     prices: [null] },
+    { id: 'rolfing',    group: D, name: 'Rolfing®',                  durations: [60, 90], prices: [null, null] },
+  ];
+  let serverBusy = [], serverBlocks = [];
+
+  async function loadLive() {
+    const res = await fetch('api/availability.php', { cache: 'no-store' });
+    if (!res.ok && res.status !== 500) throw new Error('no api');
+    const data = await res.json();
+    if (!data.ok) throw Object.assign(new Error(data.error || 'api error'), { userMsg: data.error });
+    CONFIG = data.settings; SERVICES = data.services;
+    serverBusy = data.busy; serverBlocks = data.blocks;
+    LIVE = true;
+  }
+  try { await loadLive(); } catch (e) {
+    if (e.userMsg) { showMsg(e.userMsg); }
+    LIVE = false;
+  }
+  document.getElementById('demoNote').hidden = LIVE;
+  const openedAt = Date.now();
+
+  // ===== Pomocné funkcie =====
+  const $ = id => document.getElementById(id);
+  const pad = n => String(n).padStart(2, '0');
+  const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const hm = m => `${Math.floor(m / 60)}:${pad(m % 60)}`;
+  const DOW = ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'];
+  const DOW_LONG = ['nedeľa', 'pondelok', 'utorok', 'streda', 'štvrtok', 'piatok', 'sobota'];
+  const MONTH = ['januára','februára','marca','apríla','mája','júna','júla','augusta','septembra','októbra','novembra','decembra'];
+  const MONTH_NOM = ['január','február','marec','apríl','máj','jún','júl','august','september','október','november','december'];
+  const minutesLabel = m => m >= 60 ? (m % 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m / 60} h`) : `${m} min`;
+  function showMsg(t) { const el = document.getElementById('formMsg'); el.textContent = t || ''; el.hidden = !t; }
+
+  // ===== Obsadené termíny =====
+  const KEY = 'awitalis-demo-bookings';
+  const loadSaved = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } };
+  const saveSaved = list => { try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {} };
+  let saved = LIVE ? [] : loadSaved();
+  const seeded = date => {             // ukážka: vymyslené obsadenie pre daný deň
+    let h = 0; for (const c of date) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    const rnd = () => (h = (h * 1103515245 + 12345) >>> 0) / 4294967296;
+    const out = [], n = 2 + Math.floor(rnd() * 3);
+    for (let i = 0; i < n; i++) {
+      const start = CONFIG.open + Math.floor(rnd() * 20) * 30, len = [30, 60, 60, 90][Math.floor(rnd() * 4)];
+      if (start + len <= CONFIG.close) out.push({ start, end: start + len });
+    }
+    return out;
+  };
+  const busy = date => LIVE ? serverBusy.filter(b => b.date === date) : [...seeded(date), ...saved.filter(b => b.date === date)];
+  const blocks = date => LIVE ? serverBlocks.filter(b => b.date === date) : [];
+
+  // Rovnaké pravidlo ako na serveri: žiadny blokovaný čas a menej prekrývajúcich sa rezervácií ako kapacita.
+  const isFree = (date, start, dur) => {
+    const end = start + dur;
+    if (end > CONFIG.close) return false;
+    if (blocks(date).some(b => start < b.end && b.start < end)) return false;
+    const overlapping = busy(date).filter(b => start < b.end + CONFIG.buffer && b.start < end + CONFIG.buffer).length;
+    return overlapping < CONFIG.capacity;
+  };
+  const tooSoon = (date, start) => {
+    const d = new Date(date + 'T00:00'); d.setMinutes(start);
+    return d - new Date() < CONFIG.leadMinutes * 60000;
+  };
+  const freeSlots = (date, dur) => {
+    const list = [];
+    for (let s = CONFIG.open; s + dur <= CONFIG.close; s += CONFIG.step)
+      list.push({ start: s, ok: isFree(date, s, dur) && !tooSoon(date, s) });
+    return list;
+  };
+
+  // ===== Stav =====
+  const state = { svc: null, dur: null, date: null, start: null, week: 0 };
+
+  // ===== Krok 1: služba a dĺžka =====
+  const svcEl = $('svc'), dursEl = $('durs');
+  const priceOf = (s, m) => { const p = (s.prices || [])[s.durations.indexOf(m)]; return p == null ? '' : p + ' €'; };
+  const optLabel = (s, m) => [s.note || m + ' min', priceOf(s, m)].filter(Boolean).join(' · ');
+  let lastGroup = null;
+  SERVICES.forEach(s => {
+    if (s.group && s.group !== lastGroup) {
+      lastGroup = s.group;
+      const h = document.createElement('p'); h.className = 'grp'; h.textContent = s.group; svcEl.appendChild(h);
+    }
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'opt'; b.id = 'svc-' + s.id; b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = `<b></b><span></span>`;
+    b.querySelector('b').textContent = s.name;
+    b.querySelector('span').textContent = s.durations.map(m => optLabel(s, m)).join(' / ') + (s.prices && s.prices.every(p => p == null) ? ' · cena podľa dohody' : '');
+    b.onclick = () => { state.svc = s; state.dur = s.durations.length === 1 ? s.durations[0] : null; state.start = null; render(); };
+    svcEl.appendChild(b);
+  });
+
+  // ===== Krok 2: dni =====
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const lastDay = new Date(today); lastDay.setDate(lastDay.getDate() + CONFIG.horizonDays);
+  const weekStart = n => { const d = new Date(today); d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + n * 7); return d; };
+  const maxWeek = Math.ceil(CONFIG.horizonDays / 7);
+  $('prev').onclick = () => { state.week--; render(); };
+  $('next').onclick = () => { state.week++; render(); };
+
+  // ===== Vykreslenie =====
+  function render() {
+    svcEl.querySelectorAll('.opt').forEach(b => b.setAttribute('aria-pressed', String(!!state.svc && b.id === 'svc-' + state.svc.id)));
+    if (state.svc && state.svc.durations.length > 1) {
+      dursEl.hidden = false;
+      dursEl.innerHTML = '<p>Ako dlho?</p>' + state.svc.durations.map(m => `<button type="button" class="chip" data-m="${m}" aria-pressed="${state.dur === m}">${optLabel(state.svc, m)}</button>`).join('');
+      dursEl.querySelectorAll('.chip').forEach(c => c.onclick = () => { state.dur = +c.dataset.m; state.start = null; render(); });
+    } else dursEl.hidden = true;
+    const s1 = !!(state.svc && state.dur);
+    $('s1').classList.toggle('done', s1);
+
+    $('s2').classList.toggle('locked', !s1);
+    const ws = weekStart(state.week);
+    const we = new Date(ws); we.setDate(we.getDate() + 4);
+    $('weekLabel').textContent = ws.getMonth() === we.getMonth()
+      ? `${ws.getDate()}. – ${we.getDate()}. ${MONTH_NOM[ws.getMonth()]}`
+      : `${ws.getDate()}. ${MONTH[ws.getMonth()]} – ${we.getDate()}. ${MONTH[we.getMonth()]}`;
+    $('prev').disabled = state.week <= 0;
+    $('next').disabled = state.week >= maxWeek;
+    const daysEl = $('days'); daysEl.innerHTML = '';
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(ws); d.setDate(d.getDate() + i);
+      if (!CONFIG.workDays.includes(d.getDay())) continue;
+      const key = iso(d);
+      const out = d < today || d > lastDay || blocks(key).some(b => b.start <= CONFIG.open && b.end >= CONFIG.close);
+      const count = s1 && !out ? freeSlots(key, state.dur).filter(x => x.ok).length : 0;
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'day'; b.disabled = out || (s1 && count === 0);
+      b.setAttribute('aria-pressed', String(state.date === key));
+      b.innerHTML = `<small>${DOW[d.getDay()]}</small><b>${d.getDate()}.</b><em>${out ? 'zatvorené' : !s1 ? '' : count ? count + ' voľných' : 'plno'}</em>`;
+      b.setAttribute('aria-label', `${DOW_LONG[d.getDay()]} ${d.getDate()}. ${MONTH[d.getMonth()]}${out ? ', nedostupné' : s1 ? `, ${count} voľných časov` : ''}`);
+      b.onclick = () => { state.date = key; state.start = null; render(); };
+      daysEl.appendChild(b);
+    }
+    if (state.date && s1 && !freeSlots(state.date, state.dur).some(x => x.ok)) state.date = null;
+    const s2 = s1 && !!state.date;
+    $('s2').classList.toggle('done', s2);
+
+    $('s3').classList.toggle('locked', !s2);
+    const slotsEl = $('slots'); slotsEl.innerHTML = '';
+    if (s2) {
+      const list = freeSlots(state.date, state.dur);
+      if (state.start !== null && !list.find(x => x.start === state.start && x.ok)) state.start = null;
+      list.forEach(x => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'slot'; b.disabled = !x.ok; b.textContent = hm(x.start);
+        b.setAttribute('aria-pressed', String(state.start === x.start));
+        b.setAttribute('aria-label', `${hm(x.start)} až ${hm(x.start + state.dur)}${x.ok ? '' : ', obsadené'}`);
+        b.onclick = () => { state.start = x.start; showMsg(''); render(); };
+        slotsEl.appendChild(b);
+      });
+      $('slotHint').textContent = `Terapia trvá ${minutesLabel(state.dur)}. Ukazujeme len časy, kedy sa celá stihne do ${hm(CONFIG.close)}.`;
+    } else slotsEl.innerHTML = '<p class="empty">Najprv vyberte terapiu a deň.</p>';
+    const s3 = s2 && state.start !== null;
+    $('s3').classList.toggle('done', s3);
+    $('s4').classList.toggle('locked', !s3);
+
+    const set = (id, txt) => { const el = $(id); el.textContent = txt || (id === 't-svc' ? 'Zatiaľ nevybraná' : '–'); el.classList.toggle('none', !txt); };
+    set('t-svc', state.svc && state.svc.name);
+    set('t-dur', state.dur && [state.svc.note || state.dur + ' min', priceOf(state.svc, state.dur) || 'cena podľa dohody'].join(' · '));
+    if (s3) {
+      const d = new Date(state.date + 'T00:00');
+      set('t-when', `${DOW_LONG[d.getDay()]} ${d.getDate()}. ${MONTH[d.getMonth()]}, ${hm(state.start)} – ${hm(state.start + state.dur)}`);
+    } else set('t-when', state.date ? 'Vyberte čas' : '');
+    $('submit').setAttribute('aria-disabled', String(!s3 || sending));
+  }
+
+  // ===== Odoslanie =====
+  const err = (id, msg) => { const el = $('e-' + id); if (el) el.textContent = msg || ''; };
+  function validate() {
+    let ok = true;
+    const name = $('name').value.trim(), phone = $('phone').value.replace(/\s/g, ''), email = $('email').value.trim();
+    if (name.length < 3) { err('name', 'Napíšte meno a priezvisko.'); ok = false; } else err('name');
+    if (!/^(\+421|0)9\d{8}$/.test(phone)) { err('phone', 'Zadajte slovenské mobilné číslo, napr. 0905 123 456.'); ok = false; } else err('phone');
+    if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err('email', 'E-mail nemá správny tvar.'); ok = false; } else err('email');
+    if (!$('gdpr').checked) { err('gdpr', 'Potvrďte prosím, že ste sa oboznámili s informáciami o spracúvaní údajov.'); ok = false; } else err('gdpr');
+    return ok;
+  }
+  function finish(whenText) {
+    $('doneWhen').textContent = whenText;
+    $('doneText').textContent = LIVE
+      ? ($('email').value.trim() ? 'Potvrdenie sme vám poslali e-mailom. ' : '') + 'Ak nemôžete prísť, dajte nám prosím vedieť čo najskôr.'
+      : 'Toto je ukážka, rezervácia sa nikam neodoslala. Na serveri by sa termín hneď zablokoval pre ostatných a prišlo by potvrdenie e-mailom.';
+    $('app').hidden = true; $('doneWrap').hidden = false;
+    scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  let sending = false;
+  $('submit').onclick = async () => {
+    if ($('submit').getAttribute('aria-disabled') === 'true') return;
+    showMsg('');
+    if (!validate()) { $('s4').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    const d = new Date(state.date + 'T00:00');
+    const whenText = `${state.svc.name}, ${DOW_LONG[d.getDay()]} ${d.getDate()}. ${MONTH[d.getMonth()]} o ${hm(state.start)}`;
+
+    if (!LIVE) {
+      saved = loadSaved();
+      if (!isFree(state.date, state.start, state.dur)) { showMsg('Tento čas si medzitým rezervoval niekto iný. Vyberte prosím iný.'); state.start = null; render(); return; }
+      saved.push({ date: state.date, start: state.start, end: state.start + state.dur, svc: state.svc.id });
+      saveSaved(saved);
+      return finish(whenText);
+    }
+
+    sending = true; $('submit').textContent = 'Odosielam…'; render();
+    try {
+      const res = await fetch('api/book.php', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service: state.svc.id, duration: state.dur, date: state.date, start: state.start,
+          name: $('name').value, phone: $('phone').value, email: $('email').value, note: $('note').value,
+          gdpr: $('gdpr').checked, website: $('website').value, openedAt,
+        }),
+      });
+      const data = await res.json().catch(() => ({ ok: false, error: 'Rezerváciu sa nepodarilo odoslať. Skúste to prosím znova alebo nám zavolajte.' }));
+      if (data.ok) return finish(whenText);
+      if (data.errors) Object.entries(data.errors).forEach(([k, v]) => err(k, v));
+      showMsg(data.error || 'Rezerváciu sa nepodarilo odoslať.');
+      if (data.code === 'taken' || data.errors?.time) {     // obnoviť obsadenosť, aby klient videl aktuálny stav
+        try { await loadLive(); } catch (e) {}
+        state.start = null;
+      }
+    } catch (e) {
+      showMsg('Nepodarilo sa spojiť so serverom. Skontrolujte pripojenie alebo nám zavolajte.');
+    } finally {
+      sending = false; $('submit').textContent = 'Odoslať rezerváciu'; render();
+    }
+  };
+  $('again').onclick = async () => {
+    Object.assign(state, { svc: null, dur: null, date: null, start: null, week: 0 });
+    $('form').reset(); ['name', 'phone', 'email', 'gdpr'].forEach(k => err(k)); showMsg('');
+    if (LIVE) { try { await loadLive(); } catch (e) {} }
+    $('doneWrap').hidden = true; $('app').hidden = false; render();
+  };
+
+  render();
+})();
+</script>
+<script>
+  // spoločná hlavička: mobilné menu a zvýraznenie aktuálnej časti
+  (() => {
+    const btn = document.getElementById('menuBtn'), nav = document.getElementById('mnav');
+    const set = open => { nav.hidden = !open; btn.setAttribute('aria-expanded', String(open)); };
+    btn.addEventListener('click', () => set(nav.hidden));
+    nav.addEventListener('click', e => { if (e.target.closest('a')) set(false); });
+    addEventListener('keydown', e => { if (e.key === 'Escape') set(false); });
+    addEventListener('resize', () => { if (innerWidth > 900) set(false); });
+
+    const file = location.pathname.split('/').pop() || 'index.html';
+    const all = [...document.querySelectorAll('header a[data-spy], header a[data-page]')];
+    const spies = all.filter(a => a.dataset.spy && document.getElementById(a.dataset.spy));
+    const update = () => {
+      let cur = null;
+      for (const a of spies) {
+        const r = document.getElementById(a.dataset.spy).getBoundingClientRect();
+        if (r.top <= 140 && r.bottom > 140) cur = a.dataset.spy;
+      }
+      // úplne dole na stránke: posledná viditeľná sekcia (napr. Kontakt)
+      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) {
+        const vis = spies.filter(a => document.getElementById(a.dataset.spy).getBoundingClientRect().top < innerHeight);
+        if (vis.length) cur = vis[vis.length - 1].dataset.spy;
+      }
+      all.forEach(a => {
+        const on = cur ? a.dataset.spy === cur : (a.dataset.page && file.startsWith(a.dataset.page));
+        a.classList.toggle('active', !!on);
+      });
+    };
+    addEventListener('scroll', update, { passive: true }); addEventListener('hashchange', update); update();
+  })();
+</script>
+</body>
+</html>

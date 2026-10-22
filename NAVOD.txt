@@ -1,0 +1,89 @@
+AWITALIS – WEB S REZERVAČNÝM SYSTÉMOM
+Návod na spustenie na Websupporte
+==================================================
+
+ČO JE V BALÍKU
+  index.html        hlavná stránka
+  sluzby.html       všetky služby
+  rezervacia.html   online rezervácia
+  ochrana-udajov.html  zásady ochrany osobných údajov (GDPR)
+  fonts/            písma (uložené lokálne kvôli GDPR)
+  img/              fotky
+  api/              serverová časť rezervácií (PHP)
+    config.php      >>> JEDINÝ SÚBOR, KTORÝ TREBA UPRAVIŤ <<<
+  admin/            administrácia rezervácií pre majiteľa
+
+RÝCHLA UKÁŽKA PRE KLIENTA (bez nastavovania)
+  - Stačí nahrať celý obsah balíka na webhosting (krok 5) – nič netreba vypĺňať.
+  - Web funguje celý. Rezervácia beží ako ukážka: dá sa preklikať, ale nič sa neukladá
+    (zobrazí sa nápis „Ukážka“). Administrácia /admin/ ukáže, že ešte nie je spustená.
+  - Ostrú prevádzku zapnete neskôr krokmi 1 až 7.
+
+
+1) WEBHOSTING A DOMÉNA
+  - Na Websupporte potrebujete webhosting s PHP (verzia 8.1 alebo novšia) a databázou MySQL/MariaDB.
+  - Doménu (napr. awitalis.sk) nasmerujte na tento webhosting.
+  - Vo WebAdmine zapnite HTTPS (bezplatný certifikát Let's Encrypt).
+
+2) DATABÁZA
+  - WebAdmin → Databázy → Vytvoriť databázu (MariaDB/MySQL).
+  - Poznačte si: názov databázy, používateľa, heslo a server (zvyčajne localhost
+    alebo adresa, ktorú WebAdmin ukáže).
+  - Tabuľky netreba vytvárať ručne, systém si ich vytvorí sám pri prvej rezervácii.
+
+3) E-MAIL NA ODOSIELANIE
+  - WebAdmin → E-maily → vytvorte schránku, napr. rezervacie@awitalis.sk.
+    Z tejto adresy budú chodiť potvrdenia klientom.
+
+4) ÚPRAVA api/config.php
+  Otvorte súbor v Poznámkovom bloku (alebo priamo v správcovi súborov vo WebAdmine) a vyplňte:
+  - 'dsn'  → mysql:host=SERVER;dbname=NAZOV_DATABAZY;charset=utf8mb4
+  - 'user' a 'pass' → údaje k databáze
+  - 'mail_from'  → adresa z kroku 3
+  - 'mail_owner' → kam majú chodiť upozornenia na nové rezervácie
+  - 'site_url'   → môže ostať prázdne (adresa webu sa zistí sama); ak chcete, napíšte
+                   napr. https://www.awitalis.sk (bez lomky na konci)
+  - dĺžky terapií, otváracie hodiny, prestávku a počet terapeutov ('capacity')
+    skontrolujte v tom istom súbore.
+
+5) NAHRATIE SÚBOROV
+  - Cez FTP (napr. program FileZilla) alebo správcu súborov vo WebAdmine nahrajte
+    CELÝ obsah balíka do priečinka webu (zvyčajne /web alebo /public_html).
+  - Súbory .htaccess v priečinku api musia byť nahraté tiež – chránia nastavenia.
+
+6) HESLO DO ADMINISTRÁCIE
+  - Otvorte https://www.awitalis.sk/admin/
+  - Zadajte nové heslo (aspoň 10 znakov). Stránka vypíše jeden riadok.
+  - Ten riadok vložte do api/config.php namiesto riadku 'admin_password_hash' => '',
+    a súbor znova nahrajte.
+  - Potom sa na /admin/ prihlásite týmto heslom.
+
+7) SKÚŠKA
+  - Urobte skúšobnú rezerváciu na rezervacia.html so svojím e-mailom.
+  - Skontrolujte, že prišiel e-mail vám aj klientovi (pozrite aj priečinok Spam).
+  - V administrácii skúšobnú rezerváciu zrušte.
+  - Ak e-maily nechodia, napíšte – dá sa prepnúť na odosielanie cez SMTP.
+
+
+AKO TO FUNGUJE
+  - Klient vyberie terapiu, dĺžku, deň a čas. Ponúkajú sa len časy v otváracích hodinách,
+    kedy sa celá terapia stihne a nie je obsadené.
+  - Server pri uložení všetko skontroluje znova a databázu na ten okamih zamkne,
+    takže na rovnaký čas sa nemôžu objednať dvaja ľudia (ani keď kliknú naraz).
+  - Po každej terapii je 15 min prestávka (nastaviteľné).
+  - Klient dostane e-mail s odkazom na zrušenie (najneskôr 12 h vopred).
+  - Majiteľ dostane e-mail o každej novej aj zrušenej rezervácii.
+
+ADMINISTRÁCIA (/admin/)
+  - zoznam rezervácií podľa dní, zrušenie / obnovenie
+  - zápis telefonickej objednávky (aby sa na ten čas nikto neobjednal online)
+  - zablokovanie dní alebo hodín (dovolenka, sviatok, lekár)
+  - rezervácie staršie ako 1 rok sa automaticky mažú (GDPR)
+
+DÔLEŽITÉ
+  - Na web nenahrávajte súbor api/config.local.php ani priečinok data (slúžia len na testovanie).
+  - V súbore ochrana-udajov.html doplňte údaje zvýraznené žltou: meno alebo obchodné meno,
+    IČO, miesto podnikania (podľa živnostenského registra) a dátum spustenia webu.
+  - Ak sa e-mail alebo telefón štúdia líši od awitalismasaz@gmail.com / 0952 419 390, opravte ho
+    vo všetkých .html súboroch aj v api/config.php.
+  - Písma sú uložené v priečinku fonts – web sa nepripája na Google Fonts (GDPR).

@@ -1,0 +1,4 @@
+# Nastavenia a pomocné súbory sa nesmú dať otvoriť priamo z prehliadača
+<FilesMatch "^(config|config\.local|lib)\.php$">
+  Require all denied
+</FilesMatch>

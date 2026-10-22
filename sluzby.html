@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Služby – Awitalis</title>
+<meta name="description" content="Všetky terapie a masáže štúdia Awitalis vo Svätom Petri.">
+<link rel="icon" type="image/png" href="img/logo-znak-64.png">
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+  /* Layout: rovnaký systém ako hlavná stránka – mriežka 8 kariet terapií, citát filozofie, zelená výzva na objednanie */
+  :root{
+    --bg:#EEF0EA;--surface:#E2E6DC;--fg:#172A21;--muted:#55635B;
+    --forest:#183327;--on-forest:#EEF0EA;--gold:#A8834C;--line:rgba(23,42,33,.14);
+    --display:"Marcellus","Cormorant Garamond",Georgia,serif;
+    --body:"Figtree","Segoe UI",system-ui,sans-serif;
+    --r:18px;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#0F1915;--surface:#17251F;--fg:#E4E8DF;--muted:#9AA79F;--forest:#1C3A2D;--on-forest:#EEF0EA;--gold:#C9A46B;--line:rgba(228,232,223,.14);color-scheme:dark}}
+  :root[data-theme="dark"]{
+    --bg:#0F1915;--surface:#17251F;--fg:#E4E8DF;--muted:#9AA79F;--forest:#1C3A2D;--on-forest:#EEF0EA;--gold:#C9A46B;--line:rgba(228,232,223,.14);color-scheme:dark}
+  :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.6 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+  h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:.01em}
+  p{margin:0}
+  img{max-width:100%;height:auto;display:block}
+  .wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  @media (min-width:700px){.wrap{padding-left:max(40px,env(safe-area-inset-left,0px));padding-right:max(40px,env(safe-area-inset-right,0px))}}
+  .label{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+
+  header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand img{width:46px;height:auto;flex:none}
+  .brand b{display:block;font-family:var(--display);font-weight:400;font-size:23px;letter-spacing:.02em;line-height:1}
+  .brand small{display:block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-top:3px}
+  .links{display:flex;gap:28px;font-size:15px;color:var(--muted)}
+  .links a:hover,.links a[aria-current]{color:var(--fg)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:999px;font:600 15px var(--body);border:1px solid transparent;cursor:pointer;transition:background .2s,color .2s,transform .2s}
+  .btn-main{background:var(--forest);color:var(--on-forest)}
+  .btn-main:hover{background:var(--gold);transform:translateY(-1px)}
+
+  /* intro */
+  .intro{padding-block:clamp(40px,7vw,88px) clamp(36px,5vw,64px)}
+  .back{display:inline-flex;gap:8px;font-size:14px;color:var(--muted);margin-bottom:28px}
+  .back:hover{color:var(--fg)}
+  .intro-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:24px 64px;align-items:end}
+  .intro-grid>*{min-width:0}
+  h1{font-size:clamp(38px,5.6vw,70px);line-height:1.05;margin-top:16px}
+  h1 span{color:var(--gold)}
+  .intro p.lead{color:var(--muted);font-size:18px;max-width:36ch}
+
+  .band-wrap{margin-bottom:clamp(36px,5vw,64px)}
+  .band{width:100%;aspect-ratio:21/8;object-fit:cover;object-position:50% 55%;border-radius:var(--r)}
+  .philo-img{width:100%;max-width:380px;aspect-ratio:5/6;object-fit:cover;border-radius:var(--r);margin-top:32px}
+  /* services */
+  .services{padding-bottom:clamp(64px,9vw,112px)}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  .card{background:var(--surface);border-radius:var(--r);padding:clamp(24px,3vw,36px);display:grid;grid-template-columns:52px minmax(0,1fr);gap:6px 22px;align-items:start;transition:transform .3s,background .3s,color .3s}
+  .card svg{grid-row:span 3;width:52px;height:52px;fill:none;stroke:var(--gold);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+  .card h2{font-size:clamp(23px,2.3vw,28px);line-height:1.2}
+  .card .tag{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .card p{color:var(--muted);font-size:16px;margin-top:6px;max-width:44ch}
+  .card:hover{transform:translateY(-4px);background:var(--forest);color:var(--on-forest)}
+  .card:hover p{color:color-mix(in srgb,var(--on-forest) 72%,transparent)}
+
+  /* cenník */
+  .pricing{border-top:1px solid var(--line);padding-block:clamp(64px,9vw,112px)}
+  .pr-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px 40px;margin-bottom:36px}
+  .pr-head h2{font-size:clamp(32px,4.4vw,52px);line-height:1.08;margin-top:10px}
+  .pr-head p{color:var(--muted);max-width:42ch}
+  .pr-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
+  .pr-side{display:grid;gap:20px}
+  .pr-group{background:var(--surface);border-radius:var(--r);padding:clamp(20px,3vw,32px)}
+  .pr-group h3{font-size:22px;margin-bottom:8px}
+  .pr-list{list-style:none;margin:0;padding:0}
+  .pr-list li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:14px;align-items:baseline;padding:11px 0;border-bottom:1px dashed var(--line)}
+  .pr-list li:last-child{border-bottom:0}
+  .pr-list .d{font-size:14px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .pr-list .p{font-family:var(--display);font-size:20px;color:var(--gold);min-width:52px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .pr-cta{background:var(--forest);color:var(--on-forest);border-radius:var(--r);padding:clamp(20px,3vw,28px);display:grid;gap:16px}
+  .pr-cta p{color:color-mix(in srgb,var(--on-forest) 78%,transparent);font-size:15px}
+  .pr-cta .btn{background:var(--gold);color:#172A21;justify-self:start}
+  .pr-cta .btn:hover{background:var(--on-forest)}
+  @media (max-width:900px){.pr-grid{grid-template-columns:1fr}}
+  @media (max-width:420px){.pr-list li{grid-template-columns:minmax(0,1fr) auto;gap:2px 12px}.pr-list .n{grid-column:1;grid-row:1}.pr-list .d{grid-column:1;grid-row:2}.pr-list .p{grid-column:2;grid-row:1/3;align-self:center}}
+
+  /* philosophy */
+  .philo{border-top:1px solid var(--line);padding-block:clamp(64px,9vw,112px)}
+  .philo-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:32px 72px;align-items:start}
+  .philo h2{font-size:clamp(30px,4vw,48px);line-height:1.1;margin-top:10px}
+  .points{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+  .points li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:14px;color:var(--muted)}
+  .points li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:10px;justify-self:center}
+  blockquote{margin:36px 0 0;font-family:var(--display);font-size:clamp(22px,2.4vw,28px);line-height:1.4;max-width:30ch}
+  blockquote span{color:var(--gold)}
+
+  /* call to action */
+  .cta{background:var(--forest);color:var(--on-forest);border-radius:clamp(20px,3vw,36px);margin-inline:max(8px,env(safe-area-inset-left,0px)) max(8px,env(safe-area-inset-right,0px));padding-block:clamp(48px,7vw,84px)}
+  .cta-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px 56px;align-items:end}
+  .cta h2{font-size:clamp(32px,4.6vw,56px);line-height:1.08;margin-top:12px}
+  .cta .sign{font-family:var(--display);font-size:20px;color:var(--gold);margin-top:18px}
+  .tel{display:block;font-family:var(--display);font-size:clamp(34px,4.4vw,52px);line-height:1;user-select:all}
+  .cta small{display:block;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+  .cta .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .copy{background:none;border:1px solid rgba(238,240,234,.4);color:var(--on-forest);border-radius:999px;padding:10px 18px;font:500 14px var(--body);cursor:pointer}
+  .copy:hover{border-color:var(--gold);color:var(--gold)}
+  .btn-gold{background:var(--gold);color:#172A21}
+  .btn-gold:hover{background:var(--on-forest)}
+  .hours{margin-top:22px;font-size:15px;color:color-mix(in srgb,var(--on-forest) 75%,transparent)}
+
+  footer{padding-block:32px;font-size:14px;color:var(--muted)}
+  footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+  footer a:hover{color:var(--gold)}
+
+  @media (max-width:900px){
+    .links{display:none}
+    .intro-grid,.philo-grid,.cta-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    body{font-size:16px}
+    .nav .btn{padding:10px 16px;font-size:14px}
+    .grid{grid-template-columns:1fr;gap:12px}
+    .card{grid-template-columns:40px minmax(0,1fr);gap:4px 16px;padding:22px}
+    .card svg{width:40px;height:40px}
+    .band{aspect-ratio:16/9}
+    .philo-img{max-width:none;aspect-ratio:16/10}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  html{scroll-behavior:smooth}
+  [id]{scroll-margin-top:84px}
+  .card:target{outline:2px solid var(--gold);outline-offset:4px}
+  /* mobilné menu */
+  .menu-btn{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer;place-items:center;flex:none}
+  .menu-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+  .menu-btn .x{display:none}
+  .menu-btn[aria-expanded="true"] .x{display:block}
+  .menu-btn[aria-expanded="true"] .bars{display:none}
+  .mnav{position:absolute;top:100%;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 18px 30px -18px rgba(0,0,0,.35);padding:6px max(16px,env(safe-area-inset-right,0px)) 22px max(16px,env(safe-area-inset-left,0px));display:grid}
+  .mnav a{font-family:var(--display);font-size:24px;padding:12px 0;border-bottom:1px solid var(--line);color:var(--fg);text-decoration:none}
+  .mnav a:hover{color:var(--gold)}
+  .mnav .mcta{margin-top:18px;border:0;text-align:center;font-family:var(--body);font-size:16px;font-weight:600;background:var(--gold);color:#172A21;border-radius:999px;padding:14px}
+  .mnav .mtel{border:0;font-family:var(--body);font-size:15px;text-align:center;color:var(--muted);padding:12px 0 0}
+  @media (max-width:900px){.menu-btn{display:grid}}
+  @media (max-width:640px){header .nav > .btn{display:none}}
+  .mnav[hidden]{display:none}
+  @media (min-width:901px){.mnav{display:none!important}}
+  /* fotky sa pri prejdení myšou jemne „vysunú“ (len na zariadeniach s myšou) */
+  @media (hover:hover){
+    .band,.philo-img{transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s;will-change:transform}
+    .band:hover{transform:translateY(-6px) scale(1.012);box-shadow:0 26px 50px -12px rgba(10,24,18,.45)}
+    .philo-img:hover{transform:translateY(-8px) scale(1.025);box-shadow:0 26px 50px -12px rgba(10,24,18,.45)}
+  }
+  /* postupné zobrazovanie pri scrollovaní (iba keď beží JS) */
+  .js-reveal [data-reveal]{opacity:0;transform:translateY(32px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+  .js-reveal [data-reveal].in{opacity:1;transform:none}
+  .js-reveal img[data-reveal]{transform:translateY(32px) scale(.97)}
+  .js-reveal img[data-reveal].in{transform:none}
+  @media (prefers-reduced-motion:reduce){.js-reveal [data-reveal]{opacity:1!important;transform:none!important}}
+  /* ===== spoločná hlavička (rovnaká na všetkých stránkach) ===== */
+  header .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+  header .links{display:flex;gap:28px;font-size:15px}
+  header .links a{position:relative;padding:4px 0;color:var(--muted);text-decoration:none;transition:color .2s}
+  header .links a:hover,header .links a.active{color:var(--fg)}
+  header .links a.active::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;border-radius:2px;background:var(--gold)}
+  header .hright{display:flex;align-items:center;gap:10px}
+  header .hcta{display:inline-flex;align-items:center;padding:11px 20px;border-radius:999px;background:var(--forest);color:var(--on-forest);font:600 15px var(--body);text-decoration:none;white-space:nowrap;transition:background .2s}
+  header .hcta:hover{background:var(--gold)}
+  header .hcta[aria-current]{background:var(--gold);color:#172A21}
+  .menu-btn{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer;place-items:center;flex:none}
+  .menu-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+  .menu-btn .x{display:none}
+  .menu-btn[aria-expanded="true"] .x{display:block}
+  .menu-btn[aria-expanded="true"] .bars{display:none}
+  .mnav{position:absolute;top:100%;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 18px 30px -18px rgba(0,0,0,.35);padding:6px max(16px,env(safe-area-inset-right,0px)) 22px max(16px,env(safe-area-inset-left,0px));display:grid}
+  .mnav[hidden]{display:none}
+  .mnav a{font-family:var(--display);font-size:24px;padding:12px 0;border-bottom:1px solid var(--line);color:var(--fg);text-decoration:none}
+  .mnav a.active{color:var(--gold)}
+  .mnav .mcta{margin-top:18px;border:0;text-align:center;font-family:var(--body);font-size:16px;font-weight:600;background:var(--gold);color:#172A21;border-radius:999px;padding:14px}
+  .mnav .mtel{border:0;font-family:var(--body);font-size:15px;text-align:center;color:var(--muted);padding:12px 0 0}
+  @media (max-width:900px){header .links{display:none}.menu-btn{display:grid}}
+  @media (max-width:640px){header .hcta{display:none}}
+  @media (min-width:901px){.mnav{display:none!important}}
+</style>
+</head>
+<body>
+<script>
+  // Stránka sa vždy otvorí hore (prehliadač inak niekedy zachová posun z predchádzajúcej stránky).
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (!location.hash) {
+    const toTop = () => { scrollTo({ top: 0, behavior: 'instant' }); try { document.body.scrollIntoView({ block: 'start', behavior: 'instant' }); } catch (e) {} };
+    toTop(); addEventListener('load', toTop); addEventListener('pageshow', toTop);
+  }
+</script>
+
+<header>
+  <div class="wrap nav">
+    <a href="./" class="brand" aria-label="Awitalis – domov">
+      <img src="img/logo-znak.png" alt="" width="46" height="43">
+      <span><b>Awitalis</b><small>Bonsai princíp</small></span>
+    </a>
+    <nav class="links" aria-label="Hlavné menu">
+      <a href="sluzby.html" data-page="sluzby">Služby</a>
+      <a href="#cennik" data-spy="cennik">Cenník</a>
+      <a href="./#o-nas" data-spy="o-nas">O nás</a>
+      <a href="#kontakt" data-spy="kontakt">Kontakt</a>
+    </nav>
+    <div class="hright">
+      <a class="hcta" href="rezervacia.html">Objednať sa</a>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mnav"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="bars" d="M4 7h16M4 12h16M4 17h16"/><path class="x" d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Menu" hidden>
+    <a href="sluzby.html" data-page="sluzby">Služby</a>
+    <a href="#cennik" data-spy="cennik">Cenník</a>
+    <a href="./#o-nas" data-spy="o-nas">O nás</a>
+    <a href="#kontakt" data-spy="kontakt">Kontakt</a>
+    <a class="mcta" href="rezervacia.html">Rezervovať online</a>
+    <a class="mtel" href="tel:+421952419390">alebo zavolajte 0952 419 390</a>
+  </nav>
+</header>
+
+<main>
+  <div class="intro">
+    <div class="wrap">
+      <a class="back" href="./">← Späť na úvod</a>
+      <div class="intro-grid">
+        <div>
+          <p class="label">Služby</p>
+          <h1>Terapie, ktoré pomáhajú <span>telu aj mysli</span></h1>
+        </div>
+        <p class="lead">Pri každej návšteve vyberieme postup podľa toho, čo vás trápi. Terapie sa dajú aj kombinovať.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap band-wrap">
+    <img class="band" src="img/u-kamene.jpg" alt="Naukladané kamene v zeleni" width="2400" height="900">
+  </div>
+
+  <section class="services">
+    <div class="wrap grid">
+      <article class="card" id="klasicke">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 26c6-2 10-8 12-14 2 6 6 12 12 14"/><path d="M6 32h28"/></svg>
+        <h2>Klasické a športové masáže</h2>
+        <span class="tag">Uvoľnenie · regenerácia · prevencia</span>
+        <p>Pre stuhnutý chrbát, šiju a ramená aj pre svaly po záťaži.</p>
+      </article>
+      <article class="card" id="smt">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M12 34V22l-4-6 6-8 6 6 6-6 6 8-4 6v12"/><path d="M16 26h8"/></svg>
+        <h2>Športová manuálna terapia (SMT)</h2>
+        <span class="tag">Prevencia · výkon · regenerácia</span>
+        <p>Pre športovcov aj pre každého, kto sa chce hýbať bez bolesti.</p>
+      </article>
+      <article class="card" id="kraniosakralna">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="13" r="8"/><path d="M20 21v15M14 30c2 3 10 3 12 0"/></svg>
+        <h2>Kraniosakrálna terapia</h2>
+        <span class="tag">Práca s nervovým systémom</span>
+        <p>Veľmi jemný dotyk, pri ktorom telo aj myseľ hlboko spomalia.</p>
+      </article>
+      <article class="card" id="visceralna">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 6v8"/><circle cx="20" cy="22" r="8"/><path d="M16 22c1.5-2 6.5-2 8 0M20 30v6"/></svg>
+        <h2>Viscerálna terapia</h2>
+        <span class="tag">Práca s orgánmi a fasciami</span>
+        <p>Jemné uvoľnenie brušnej oblasti, ktorá súvisí s celým telom.</p>
+      </article>
+      <article class="card" id="lymfodrenaz">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 6c6 8 10 13 10 19a10 10 0 0 1-20 0c0-6 4-11 10-19z"/></svg>
+        <h2>Vnútorná detoxikačná lymfodrenáž</h2>
+        <span class="tag">Jemná technika lymfatického systému</span>
+        <p>Podpora prúdenia lymfy a pocit ľahkosti v tele.</p>
+      </article>
+      <article class="card" id="lavove">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><ellipse cx="20" cy="30" rx="13" ry="5"/><ellipse cx="20" cy="21" rx="10" ry="4.5"/><ellipse cx="20" cy="13" rx="7" ry="3.5"/></svg>
+        <h2>Masáž lávovými kameňmi</h2>
+        <span class="tag">Hlboké prehriatie a uvoľnenie</span>
+        <p>Nahriate kamene prehrejú svaly a pomôžu im povoliť napätie.</p>
+      </article>
+      <article class="card" id="lomi">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 22c4-4 8-4 12 0s8 4 12 0 6-3 8-1"/><path d="M4 30c4-4 8-4 12 0s8 4 12 0 6-3 8-1"/><path d="M4 14c4-4 8-4 12 0s8 4 12 0 6-3 8-1"/></svg>
+        <h2>Lomi Lomi masáž</h2>
+        <span class="tag">Havajská masáž plynulými ťahmi</span>
+        <p>Dlhé, vlnité ťahy predlaktím, pri ktorých sa uvoľní telo aj hlava.</p>
+      </article>
+      <article class="card" id="maderoterapia">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 32 28 12"/><path d="M24 8l8 8"/><path d="M26 10l2-2M30 14l2-2M10 26l4 4"/></svg>
+        <h2>Maderoterapia</h2>
+        <span class="tag">Masáž drevenými nástrojmi</span>
+        <p>Podporuje prúdenie lymfy a pomáha pri tvarovaní postavy.</p>
+      </article>
+      <article class="card" id="reflexna">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M22 35c-6 0-9-5-9-11 0-7 3-16 9-16s7 5 6 10-1 8 0 11-1 6-6 6z"/><circle cx="18" cy="17" r="1.2"/><circle cx="21" cy="24" r="1.2"/><circle cx="19" cy="30" r="1.2"/></svg>
+        <h2>Reflexná masáž chodidiel</h2>
+        <span class="tag">Práca s reflexnými bodmi</span>
+        <p>Tlak na body na chodidlách, ktorý uvoľní a upokojí celé telo.</p>
+      </article>
+      <article class="card" id="shockwave">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="12" cy="20" r="3"/><path d="M19 13a10 10 0 0 1 0 14M24 9a16 16 0 0 1 0 22M29 5a22 22 0 0 1 0 30"/></svg>
+        <h2>Terapia rázovou vlnou</h2>
+        <span class="tag">Prístrojová terapia (shockwave)</span>
+        <p>Pri bolestivých úponoch a stuhnutých miestach, napríklad na päte alebo ramene.</p>
+      </article>
+      <article class="card" id="breuss">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4v32"/><path d="M14 9h12M13 15h14M12 21h16M13 27h14M15 33h10"/></svg>
+        <h2>Breuss masáž</h2>
+        <span class="tag">Masáž chrbtice a diskov</span>
+        <p>Jemná masáž pozdĺž chrbtice, ktorá uvoľní a natiahne celý chrbát.</p>
+      </article>
+      <article class="card" id="moxovanie">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 8c3 4-2 6 0 10 2-2 4-1 4 2a4 4 0 0 1-8 0c0-5 4-7 4-12z"/><path d="M10 28h20l-2 6H12z"/></svg>
+        <h2>Moxovanie</h2>
+        <span class="tag">Tradičná metóda podpory zdravia</span>
+        <p>Jemné prehrievanie vybraných bodov na tele.</p>
+      </article>
+      <article class="card" id="rolfing">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="8" r="4"/><path d="M20 12v12M12 18l8-3 8 3M20 24l-6 12M20 24l6 12"/></svg>
+        <h2>Rolfing®</h2>
+        <span class="tag">Integračná práca tela a pohybových vzorov</span>
+        <p>Práca s fasciami pre lepšie držanie tela a ľahší pohyb.</p>
+      </article>
+      <article class="card" id="doplnkove">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M13 12h14v6a7 7 0 0 1-14 0z"/><path d="M11 12h18"/><path d="M8 32c6-3 18-3 24 0" stroke-dasharray="3 3"/></svg>
+        <h2>Bankovanie a tejping</h2>
+        <span class="tag">Doplnkové služby k masáži</span>
+        <p>Bankovanie uvoľní stuhnuté miesta, kineziotejping podporí svaly a kĺby aj po odchode zo štúdia.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="pricing" id="cennik">
+    <div class="wrap">
+      <div class="pr-head">
+        <div><p class="label">Cenník</p><h2>Koľko to stojí</h2></div>
+        <p>Ceny sú orientačné. Typ a dĺžku terapie prispôsobíme vám, viac techník sa dá spojiť do jedného sedenia.</p>
+      </div>
+      <div class="pr-grid">
+        <div class="pr-group">
+          <h3>Manuálne terapie</h3>
+          <ul class="pr-list">
+            <li><span class="n">Celotelová uvoľňujúca masáž</span><span class="d">50 min</span><span class="p">40 €</span></li>
+            <li><span class="n">Športová masáž</span><span class="d">50 min</span><span class="p">45 €</span></li>
+            <li><span class="n">Masáž chrbta a šije</span><span class="d">30 min</span><span class="p">25 €</span></li>
+            <li><span class="n">Manuálna lymfodrenáž tela</span><span class="d">25 min</span><span class="p">45 €</span></li>
+            <li><span class="n">Manuálna lymfodrenáž tváre</span><span class="d">25 min</span><span class="p">40 €</span></li>
+            <li><span class="n">Kraniosakrálna terapia</span><span class="d">50 min</span><span class="p">40 €</span></li>
+            <li><span class="n">Viscerálna terapia</span><span class="d">50 min</span><span class="p">40 €</span></li>
+            <li><span class="n">Reflexná masáž chodidiel</span><span class="d">40 min</span><span class="p">30 €</span></li>
+            <li><span class="n">Masáž lávovými kameňmi</span><span class="d">60 min</span><span class="p">60 €</span></li>
+            <li><span class="n">Lomi Lomi masáž</span><span class="d">70 min</span><span class="p">80 €</span></li>
+            <li><span class="n">Maderoterapia</span><span class="d">50 min</span><span class="p">45 €</span></li>
+          </ul>
+        </div>
+        <div class="pr-side">
+          <div class="pr-group">
+            <h3>Prístrojové terapie</h3>
+            <ul class="pr-list">
+              <li><span class="n">Prístrojová lymfodrenáž (lymfopres)</span><span class="d">30 min</span><span class="p">20 €</span></li>
+              <li><span class="n">Terapia rázovou vlnou (shockwave)</span><span class="d">1 lokalita</span><span class="p">20 €</span></li>
+              <li><span class="n">Komplexná terapia – rázová vlna + manuálne ošetrenie</span><span class="d">2 lokality</span><span class="p">55 €</span></li>
+            </ul>
+          </div>
+          <div class="pr-group">
+            <h3>Doplnkové služby</h3>
+            <ul class="pr-list">
+              <li><span class="n">Bankovanie – doplatok k masáži</span><span class="d"></span><span class="p">+5 €</span></li>
+              <li><span class="n">Tejping (kineziotejping)</span><span class="d"></span><span class="p">10 €</span></li>
+            </ul>
+          </div>
+          <div class="pr-cta">
+            <p>Breuss masáž, moxovanie, rolfing a športovú manuálnu terapiu naceníme podľa dohody.</p>
+            <a class="btn btn-main" href="rezervacia.html">Rezervovať termín</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="philo">
+    <div class="wrap philo-grid">
+      <div>
+        <p class="label">Ako pracujeme</p>
+        <h2>Nepozeráme sa len na miesto bolesti</h2>
+        <img class="philo-img" src="img/u-bonsai-svetla.jpg" alt="Bonsaj s machom" width="1000" height="1200" loading="lazy">
+      </div>
+      <div>
+        <ul class="points">
+          <li>Telo má prirodzenú schopnosť obnoviť rovnováhu, ak mu vytvoríme správne podmienky.</li>
+          <li>Hľadáme súvislosti, pretože telo funguje ako jeden celok.</li>
+          <li>Ku každému pristupujeme individuálne, s rešpektom, trpezlivosťou a porozumením.</li>
+        </ul>
+        <blockquote>„Našou úlohou nie je telo opraviť. <span>Našou úlohou je vytvoriť podmienky, aby mohlo ukázať svoju vlastnú schopnosť obnovy.</span>“</blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section id="kontakt" class="cta">
+    <div class="wrap cta-grid">
+      <div>
+        <p class="label">Objednávky</p>
+        <h2>Neviete si vybrať? Zavolajte, poradíme vám.</h2>
+        <p class="sign">Robíme to spolu. Srdcom. Pre vás. Pali a Jarka</p>
+      </div>
+      <div>
+        <small>Telefón</small>
+        <a class="tel" href="tel:+421952419390" id="phone">0952 419 390</a>
+        <div class="row">
+          <button class="copy" type="button" id="copy-phone">Kopírovať číslo</button>
+          <a class="btn btn-gold" href="rezervacia.html">Rezervovať online</a>
+          <a class="copy" href="https://www.google.com/maps/search/?api=1&query=Hurbanovsk%C3%A1+cesta+30%2C+946+57+Sv%C3%A4t%C3%BD+Peter" target="_blank" rel="noopener">Navigovať ↗</a>
+        </div>
+        <p class="hours">Po – Pi 8:00 – 19:00 alebo podľa dohody · Hurbanovská cesta 30, Svätý Peter</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Awitalis masážne štúdio · Svätý Peter</span>
+    <span><a href="ochrana-udajov.html">Ochrana osobných údajov</a> · <a href="./">Späť na úvod</a></span>
+  </div>
+</footer>
+
+<script>
+  const btn = document.getElementById('copy-phone');
+  btn.addEventListener('click', () => {
+    const sel = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById('phone')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    try { navigator.clipboard.writeText('0952 419 390').then(() => { btn.textContent = 'Skopírované'; setTimeout(() => btn.textContent = 'Kopírovať číslo', 1800); }, sel); } catch (e) { sel(); }
+  });
+</script>
+<script>
+  // Postupné zobrazovanie: prvky pod okrajom obrazovky sa vynoria, keď k nim doscrollujete.
+  (() => {
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const els = [...document.querySelectorAll('.band, .card, .pr-group, .pr-cta, .philo-grid > div, .cta-grid > div, footer .wrap')];
+    const vh = innerHeight;
+    document.documentElement.classList.add('js-reveal');
+    els.forEach(el => {
+      if (el.getBoundingClientRect().top < vh * 0.92) return;   // už viditeľné – nechať tak
+      if (location.hash && el.id && '#' + el.id === location.hash) return;   // cieľ odkazu zo stránky Úvod ukázať hneď
+      const sibs = [...el.parentElement.children].filter(c => els.includes(c));
+      el.style.transitionDelay = Math.min(sibs.indexOf(el), 4) * 90 + 'ms';
+      el.setAttribute('data-reveal', '');
+    });
+    // po dobehnutí animácie prvok vrátime do normálu, aby fungoval hover a nemal oneskorenie
+    const show = el => {
+      if (el.classList.contains('in')) return;
+      el.classList.add('in');
+      setTimeout(() => { el.removeAttribute('data-reveal'); el.classList.remove('in'); el.style.transitionDelay = ''; }, 1400);
+    };
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { show(e.target); io.unobserve(e.target); }
+    }), { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    const pending = new Set(document.querySelectorAll('[data-reveal]'));
+    pending.forEach(el => io.observe(el));
+    // záloha pre prehliadače, ktoré observer spúšťajú oneskorene
+    const check = () => pending.forEach(el => {
+      if (!el.hasAttribute('data-reveal') || el.classList.contains('in')) { pending.delete(el); return; }
+      if (el.getBoundingClientRect().top < innerHeight * 0.9) { show(el); pending.delete(el); }
+    });
+    addEventListener('scroll', check, { passive: true });
+    addEventListener('resize', check);
+  })();
+</script>
+<script>
+  // spoločná hlavička: mobilné menu a zvýraznenie aktuálnej časti
+  (() => {
+    const btn = document.getElementById('menuBtn'), nav = document.getElementById('mnav');
+    const set = open => { nav.hidden = !open; btn.setAttribute('aria-expanded', String(open)); };
+    btn.addEventListener('click', () => set(nav.hidden));
+    nav.addEventListener('click', e => { if (e.target.closest('a')) set(false); });
+    addEventListener('keydown', e => { if (e.key === 'Escape') set(false); });
+    addEventListener('resize', () => { if (innerWidth > 900) set(false); });
+
+    const file = location.pathname.split('/').pop() || 'index.html';
+    const all = [...document.querySelectorAll('header a[data-spy], header a[data-page]')];
+    const spies = all.filter(a => a.dataset.spy && document.getElementById(a.dataset.spy));
+    const update = () => {
+      let cur = null;
+      for (const a of spies) {
+        const r = document.getElementById(a.dataset.spy).getBoundingClientRect();
+        if (r.top <= 140 && r.bottom > 140) cur = a.dataset.spy;
+      }
+      // úplne dole na stránke: posledná viditeľná sekcia (napr. Kontakt)
+      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) {
+        const vis = spies.filter(a => document.getElementById(a.dataset.spy).getBoundingClientRect().top < innerHeight);
+        if (vis.length) cur = vis[vis.length - 1].dataset.spy;
+      }
+      all.forEach(a => {
+        const on = cur ? a.dataset.spy === cur : (a.dataset.page && file.startsWith(a.dataset.page));
+        a.classList.toggle('active', !!on);
+      });
+    };
+    addEventListener('scroll', update, { passive: true }); addEventListener('hashchange', update); update();
+  })();
+</script>
+</body>
+</html>
